@@ -1,6 +1,7 @@
 import os
-from pyserini.index.__main__ import JIndexCollection
-from pyserini.search import SimpleSearcher
+import subprocess
+import sys
+from pyserini.search.lucene import LuceneSearcher
 import jsonlines
 from multiprocessing import Pool
 import shutil
@@ -20,7 +21,6 @@ ARGS = ["-collection", "JsonCollection",
 class Ranker(object):
 
     def __init__(self):
-        self.idx = None
         self.searcher = None
 
     def _make_chuncks(self, dir):
@@ -80,8 +80,8 @@ class Ranker(object):
         # p.map(self._convert_chunks, os.listdir("./index/chunks/"))
         # p.close()
         shutil.rmtree('./index/chunks')
-        JIndexCollection.main(ARGS)
-        self.searcher = SimpleSearcher('./index/')
+        subprocess.run([sys.executable, '-m', 'pyserini.index.lucene'] + ARGS, check=True)
+        self.searcher = LuceneSearcher('./index/')
         shutil.rmtree('./index/convert/')
 
     def rank_publications(self, query, page, rpp): 
@@ -89,10 +89,9 @@ class Ranker(object):
         itemlist = []
 
         if query is not None:
-            if self.idx is None:
+            if self.searcher is None:
                 try:
-                    self.searcher = SimpleSearcher('./index/')
-                    self.searcher.set_rm3(10, 10, 0.5)
+                    self.searcher = LuceneSearcher('./index/')
                 except Exception as e:
                     print('No index available: ', e)
 

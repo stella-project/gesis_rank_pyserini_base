@@ -4,7 +4,7 @@ from systems import Ranker, Recommender
 
 app = Flask(__name__)
 ranker = Ranker()
-recommender = Recommender()
+# recommender = Recommender()
 
 
 @app.route('/')
@@ -20,7 +20,7 @@ def test():
 @app.route('/index', methods=["GET"])
 def index():
     ranker.index()
-    recommender.index()
+    # recommender.index()
     return 'Indexing done!', 200
 
 
@@ -33,22 +33,22 @@ def ranking():
     return jsonify(response)
 
 
-@app.route('/recommendation/datasets', methods=["GET"])
-def rec_data():
-    item_id = request.args.get('item_id', None)
-    page = request.args.get('page', default=0, type=int)
-    rpp = request.args.get('rpp', default=20, type=int)
-    response = recommender.recommend_datasets(item_id, page, rpp)
-    return jsonify(response)
+# @app.route('/recommendation/datasets', methods=["GET"])
+# def rec_data():
+#     item_id = request.args.get('item_id', None)
+#     page = request.args.get('page', default=0, type=int)
+#     rpp = request.args.get('rpp', default=20, type=int)
+#     response = recommender.recommend_datasets(item_id, page, rpp)
+#     return jsonify(response)
 
 
-@app.route('/recommendation/publications', methods=["GET"])
-def rec_pub():
-    item_id = request.args.get('item_id', None)
-    page = request.args.get('page', default=0, type=int)
-    rpp = request.args.get('rpp', default=20, type=int)
-    response = recommender.recommend_publications(item_id, page, rpp)
-    return jsonify(response)
+# @app.route('/recommendation/publications', methods=["GET"])
+# def rec_pub():
+#     item_id = request.args.get('item_id', None)
+#     page = request.args.get('page', default=0, type=int)
+#     rpp = request.args.get('rpp', default=20, type=int)
+#     response = recommender.recommend_publications(item_id, page, rpp)
+#     return jsonify(response)
 
 
 if __name__ == '__main__':
